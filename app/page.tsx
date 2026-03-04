@@ -1,24 +1,29 @@
-'use client'; // 必须加这一行，因为我们用了 AntD 的交互组件
+'use client';
 
-import React, { useState } from 'react';
-import { Layout } from 'antd';
-import DataCenterSider from '@/app/components/DataCenterSider';
-import ChatPanel from '@/app/components/ChatPanel';
-import type { ChatMessage } from '@/app/types/chat';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { getCurrentUser } from '@/app/lib/authStore';
+import { userApi } from '@/app/services/userApi';
 
 export default function Home() {
-  // 模拟一些聊天记录，为了让你看到效果
-  const [currentFileId, setCurrentFileId] = useState<string | null>(null);
+  const router = useRouter();
 
+  useEffect(() => {
+    const resolveSession = async () => {
+      if (getCurrentUser()) {
+        router.replace('/home');
+        return;
+      }
+      try {
+        await userApi.refresh();
+        router.replace('/home');
+      } catch {
+        router.replace('/login');
+      }
+    };
 
-  return (
-    // 最外层布局：全屏高度
-    <Layout style={{ height: '100vh' }}>
-      {/* === 左侧：数据控制区 === */}
-      <DataCenterSider currentFileId={currentFileId} setCurrentFileId={setCurrentFileId} />
+    void resolveSession();
+  }, [router]);
 
-      {/* === 右侧：智能对话区 === */}
-      <ChatPanel currentFileId={currentFileId} setCurrentFileId={setCurrentFileId} />
-    </Layout>
-  );
+  return null;
 }

@@ -1,0 +1,20 @@
+---
+description: Async function readability and await preference
+alwaysApply: true
+---
+
+# Async Readability
+
+- Declare async functions with the `async` keyword (no hidden async behavior).
+- Prefer `await` over chaining `.then()` for async calls.
+
+```typescript
+// ❌ BAD
+const loadUser = () => fetchUser().then((res) => res.data);
+
+// ✅ GOOD
+const loadUser = async () => {
+  const res = await fetchUser();
+  return res.data;
+};
+```
