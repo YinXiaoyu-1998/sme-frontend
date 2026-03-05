@@ -1,0 +1,20 @@
+---
+description: Prefer path aliases for local imports
+alwaysApply: true
+---
+
+# Path Alias Imports
+
+Always use path aliases when importing local modules (e.g., `@somelib/*` → `src/somelib/*`).
+
+If path aliases are not configured, set them up in `tsconfig` before adding new local imports.
+
+Example:
+
+```typescript
+// ✅ GOOD
+import { SomelibService } from '@somelib/somelib.service';
+
+// ❌ BAD
+import { SomelibService } from '../../somelib/somelib.service';
+```
