@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+.idea/
+.vscode/
 
 # Cursor IDE
 .cursor/
@@ -38,6 +40,10 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# local tooling
+.turbo/
+dist/
 
 # typescript
 *.tsbuildinfo

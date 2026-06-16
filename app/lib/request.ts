@@ -96,4 +96,8 @@ export class RequestClient {
   post<T, D = unknown>(url: string, data?: D, config?: InternalRequestConfig): Promise<T> {
     return this.request<T>({ ...config, url, method: "POST", data });
   }
+
+  delete<T>(url: string, config?: InternalRequestConfig): Promise<T> {
+    return this.request<T>({ ...config, url, method: "DELETE" });
+  }
 }

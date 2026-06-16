@@ -24,3 +24,14 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.data-center-upload,
+.data-center-upload .ant-upload,
+.data-center-upload .ant-upload-drag {
+  height: 300px !important;
+}
+
+.data-center-upload .ant-upload-drag-container {
+  height: 100%;
+  vertical-align: middle;
+}

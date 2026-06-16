@@ -10,15 +10,16 @@ import remarkGfm from 'remark-gfm'; // 引入表格插件
 import { getCurrentUser } from '@/app/lib/authStore';
 const { Content } = Layout;
 
-// type ChatPanelProps = {
-//   messages: ChatMessage[];
-//   onSend: (value: string) => void;
-// };
+const initialMessages: ChatMessage[] = [
+  { role: 'ai', content: '您好！我是企业智脑。请上传 Excel 或 PDF 文件，我会帮您分析数据。' },
+];
 
-export default function ChatPanel() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'ai', content: '您好！我是企业智脑。请上传 Excel 或 PDF 文件，我会帮您分析数据。' },
-  ]);
+type ChatPanelProps = {
+  resetKey?: number;
+};
+
+export default function ChatPanel({ resetKey = 0 }: ChatPanelProps) {
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   // ... 状态定义 ...
   const [loading, setLoading] = useState(false); // 增加一个 loading 状态
   const [inputValue, setInputValue] = useState('');
@@ -39,7 +40,7 @@ export default function ChatPanel() {
     try {
       const history = await chatApi.getHistory(userId);
       // 数据库里的字段是 role/content，跟我们需要的一致
-      setMessages(history);
+      setMessages(history.length > 0 ? history : initialMessages);
     } catch (e) {
       console.error("加载历史失败", e);
       antMessage.error('加载历史失败');
@@ -50,7 +51,7 @@ export default function ChatPanel() {
     if (currentUser) {
       fetchHistory(currentUser?.id ?? '');
     }
-  }, [currentUser]);
+  }, [currentUser, resetKey]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });

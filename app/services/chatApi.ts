@@ -42,6 +42,11 @@ type ChatAnswerResponse = {
   generatedFiles?: GeneratedFile[];
 };
 
+type ClearChatHistoryResponse = {
+  deletedMessages: number;
+  deletedGeneratedFiles: number;
+};
+
 const backendBaseUrl = process.env.NEXT_PUBLIC_SME_BACKEND_URL ?? "";
 
 const requestClient = new RequestClient({
@@ -74,6 +79,12 @@ export class ChatApi {
       userId,
     });
     return response;
+  }
+
+  async clearHistory(userId: string) {
+    return this.request.delete<ClearChatHistoryResponse>("/chat/history", {
+      params: { userId },
+    });
   }
 }
 
