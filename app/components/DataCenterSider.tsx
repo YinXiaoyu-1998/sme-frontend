@@ -5,7 +5,7 @@ import { Layout, Card, Upload, List, Typography, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import type { UploadFilesResponse } from '@/app/types/api';
 import { filesApi } from '@/app/services/filesApi';
-import type { UploadProps } from 'antd';
+import type { UploadFile, UploadProps } from 'antd';
 import { getCurrentUser } from '@/app/lib/authStore';
 
 const { Sider } = Layout;
@@ -40,9 +40,9 @@ export default function DataCenterSider() {
     void fetchFiles();
   }, [fetchFiles]);
 
-  const handleUploadDone = (file: any) => {
-    const response: UploadFilesResponse = file?.response;
-    const fileId = response.files[0]?.id;
+  const handleUploadDone = (file: UploadFile<UploadFilesResponse>) => {
+    const response = file.response;
+    const fileId = response?.files[0]?.id;
     if (!fileId) {
       message.error('上传失败，未收到文件信息');
       return;
@@ -52,9 +52,8 @@ export default function DataCenterSider() {
     void fetchFiles();
   };
   // Add a trigger when the call to files/upload finished
-  const uploadProps = {
+  const uploadProps: UploadProps = {
     name: 'files',
-    height: 300,
     multiple: false,
     customRequest: (async (options) => {
       const { file, onSuccess, onError } = options;
@@ -71,7 +70,7 @@ export default function DataCenterSider() {
         onError?.(error as Error);
       }
     }) as UploadProps['customRequest'],
-    onChange(info: any) {
+    onChange(info) {
       const { status } = info.file;
       if (status === 'done') {
         message.success(`${info.file.name} 上传成功`);
@@ -81,7 +80,7 @@ export default function DataCenterSider() {
         message.error(`${info.file.name} 上传失败`);
       }
     },
-    onDrop(e: any) {
+    onDrop(e) {
       console.log('Test2025 onDrop', e);
       console.log('Dropped files', e.dataTransfer.files);
     },
@@ -91,14 +90,19 @@ export default function DataCenterSider() {
     <Sider
       width={350}
       theme="light"
-      style={{ padding: '20px', borderRight: '1px solid #f0f0f0', height: '100%', overflowY: 'auto' }}
+      style={{
+        padding: '20px',
+        borderRight: '1px solid #f0f0f0',
+        height: '100%',
+        overflowY: 'auto',
+      }}
     >
-      <div style={{ marginBottom: 30 }}>
+      <div style={{ marginBottom: 16 }}>
         <Title level={4}>📚 数据中心</Title>
         <Text type="secondary">上传企业私有数据以构建知识库</Text>
       </div>
 
-      <Dragger {...uploadProps} style={{ marginBottom: 20 }}>
+      <Dragger {...uploadProps} className="data-center-upload" style={{ marginBottom: 20 }}>
         <p className="ant-upload-drag-icon">
           <InboxOutlined style={{ color: '#1677ff' }} />
         </p>
